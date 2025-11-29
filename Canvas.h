@@ -22,6 +22,7 @@ class Canvas
 
         void Clear(void);
         void SetColor(Color);
+        void SetColorRGB(float r, float g, float b);
         void LineRel(int, int);
         void Line(int, int, int, int);
         void Line(int, int);
@@ -40,14 +41,16 @@ class Canvas
         void SetLineStyle(LineStyle=SOLID);
         void SetFont(Font=NORMAL);
         void Show(void);
-        
+
         // Animation methods
         bool ShouldClose();
         void Update();
         void ClearLines();
-        
+
         // 3D methods
         void Line3D(double x1, double y1, double z1, double x2, double y2, double z2);
+        void Line3DColored(double x1, double y1, double z1, double x2, double y2, double z2,
+                          float r, float g, float b);
         void SetRotation(double angleX, double angleY);
 
     private:

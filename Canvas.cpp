@@ -2,6 +2,7 @@
  * File: Canvas.cpp
  * Purpose: implementation of Canvas class using GLFW with 3D support
  *======================================================================*/
+#define GL_SILENCE_DEPRECATION
 #include "Canvas.h"
 #include <cmath>
 #include <iostream>
@@ -30,6 +31,12 @@ Canvas::Canvas(int w, int h)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     
+    // Enable line smoothing for better appearance
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // Set up perspective projection for 3D
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -42,10 +49,10 @@ Canvas::Canvas(int w, int h)
     double right = top * aspect;
     double left = -right;
     glFrustum(left, right, bottom, top, nearPlane, farPlane);
-    
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
+
     // Set background to black
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -73,6 +80,13 @@ void Canvas::SetColor(Color color)
     }
 }
 
+void Canvas::SetColorRGB(float r, float g, float b)
+{
+    curColorR = r;
+    curColorG = g;
+    curColorB = b;
+}
+
 void Canvas::Line3D(double x1, double y1, double z1, double x2, double y2, double z2)
 {
     LineSegment3D line;
@@ -89,11 +103,30 @@ void Canvas::Line3D(double x1, double y1, double z1, double x2, double y2, doubl
     lines3D.push_back(line);
 }
 
+void Canvas::Line3DColored(double x1, double y1, double z1, double x2, double y2, double z2,
+                          float r, float g, float b)
+{
+    LineSegment3D line;
+    line.x1 = x1;
+    line.y1 = y1;
+    line.z1 = z1;
+    line.x2 = x2;
+    line.y2 = y2;
+    line.z2 = z2;
+    line.r = r;
+    line.g = g;
+    line.b = b;
+    line.width = curLineWidth;
+    lines3D.push_back(line);
+}
+
 void Canvas::SetRotation(double angleX, double angleY)
 {
     rotationX = angleX;
     rotationY = angleY;
 }
+
+// ... existing code ...
 
 void Canvas::addLine(int x1, int y1, int x2, int y2)
 {
